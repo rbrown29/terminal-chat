@@ -17,10 +17,23 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
+  let currentRoom;
+  let currentUser;
 
   socket.on("join_room", (data) => {
-    socket.join(data);
+    const { room, username } = data;
+    currentRoom = room;
+    currentUser = username;
+    socket.join(room);
     console.log(`User with ID: ${socket.id} joined room: ${data}`);
+    socket.to(room).emit("user_joined", {
+      message: `${username} has joined the room`,
+      time:
+        new Date(Date.now()).getHours() +
+        ":" +
+        new Date(Date.now()).getMinutes(),
+      author: "System",
+    });
   });
 
   socket.on("send_message", (data) => {
@@ -29,8 +42,17 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("User Disconnected", socket.id);
+    socket.to(currentRoom).emit("user_left", {
+      message: `${currentUser} has left the room`,
+      time:
+        new Date(Date.now()).getHours() +
+        ":" +
+        new Date(Date.now()).getMinutes(),
+      author: "System",
+    });
   });
 });
+
 
 server.listen(3001, () => {
   console.log("SERVER RUNNING");

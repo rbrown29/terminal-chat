@@ -16,20 +16,30 @@ function Chat({ socket, username, room }) {
           ":" +
           new Date(Date.now()).getMinutes(),
       };
-
       await socket.emit("send_message", messageData);
       setMessageList((list) => [...list, messageData]);
       setCurrentMessage("");
     }
   };
 
+  
   useEffect(() => {
-    socket.once("receive_message", (data) => {
+    socket.on("receive_message", (data) => {
+      setMessageList((list) => [...list, data]);
+    });
+
+    socket.on("user_joined", (data) => {
+      setMessageList((list) => [...list, data]);
+    });
+
+    socket.on("user_left", (data) => {
       setMessageList((list) => [...list, data]);
     });
   
     return () => {
       socket.off("receive_message");
+      socket.off("user_joined");
+      socket.off("user_left");
     };
     
   }, [socket]); 
