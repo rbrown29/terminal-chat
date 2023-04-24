@@ -3,6 +3,7 @@ const app = express();
 const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
+const usersInRooms = {};
 app.use(cors());
 app.options("*", cors());
 
@@ -25,6 +26,10 @@ io.on("connection", (socket) => {
     currentRoom = room;
     currentUser = username;
     socket.join(room);
+    if (!usersInRooms[room]) {
+      usersInRooms[room] = [];
+    }
+    usersInRooms[room].push({ username, id: socket.id });
     console.log(`User with ID: ${socket.id} joined room: ${data}`);
     socket.to(room).emit("user_joined", {
       message: `${username} has joined the room`,
@@ -34,6 +39,7 @@ io.on("connection", (socket) => {
         new Date(Date.now()).getMinutes(),
       author: "System",
     });
+    socket.emit("room_users", usersInRooms[room]);
   });
 
   socket.on("send_message", (data) => {
@@ -42,14 +48,26 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("User Disconnected", socket.id);
-    socket.to(currentRoom).emit("user_left", {
-      message: `${currentUser} has left the room`,
-      time:
-        new Date(Date.now()).getHours() +
-        ":" +
-        new Date(Date.now()).getMinutes(),
-      author: "System",
-    });
+  
+    for (const room in usersInRooms) {
+      const userIndex = usersInRooms[room].findIndex(
+        (user) => user.id === socket.id
+      );
+  
+      if (userIndex !== -1) {
+        const username = usersInRooms[room][userIndex].username;
+        usersInRooms[room].splice(userIndex, 1);
+  
+        socket.to(room).emit("user_left", {
+          message: `${username} has left the room`,
+          time:
+            new Date(Date.now()).getHours() +
+            ":" +
+            new Date(Date.now()).getMinutes(),
+          author: "System",
+        });
+      }
+    }
   });
 });
 

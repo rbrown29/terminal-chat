@@ -35,11 +35,28 @@ function Chat({ socket, username, room }) {
     socket.on("user_left", (data) => {
       setMessageList((list) => [...list, data]);
     });
+
+    socket.on("room_users", (users) => {
+      setMessageList((list) => [
+        ...list,
+        {
+          message: `Users in the room: ${users
+            .map((user) => user.username)
+            .join(", ")}`,
+          time:
+            new Date(Date.now()).getHours() +
+            ":" +
+            new Date(Date.now()).getMinutes(),
+          author: "System",
+        },
+      ]);
+    });
   
     return () => {
       socket.off("receive_message");
       socket.off("user_joined");
       socket.off("user_left");
+      socket.off("room_users");
     };
     
   }, [socket]); 
