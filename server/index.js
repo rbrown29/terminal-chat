@@ -31,7 +31,7 @@ io.on("connection", (socket) => {
       usersInRooms[room] = [];
     }
     usersInRooms[room].push({ username, id: socket.id });
-    console.log(`User with ID: ${socket.id} joined room: ${data}`);
+    console.log(`User with ID: ${socket.id} joined room: ${room}`);
     socket.to(room).emit("user_joined", {
       message: `${username} has joined the room`,
       time:
