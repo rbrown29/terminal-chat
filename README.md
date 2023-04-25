@@ -20,10 +20,10 @@
 
 ---
 <div>
-:hammer_and_wrench: Languages and Tools : <br /><br />
+:hammer_and_wrench: Languages and Tools : <br />
 <img src="https://github.com/devicons/devicon/blob/master/icons/css3/css3-original-wordmark.svg"width="40" height="40"/>&nbsp;
 <img src="https://github.com/devicons/devicon/blob/master/icons/javascript/javascript-original.svg"width="40" height="40"/>&nbsp;
 <img src="https://github.com/devicons/devicon/blob/master/icons/nodejs/nodejs-original.svg"width="40" height="40"/>&nbsp;
 <img src="https://github.com/devicons/devicon/blob/master/icons/react/react-original-wordmark.svg" title="React" alt="React" width="40" height="40"/>&nbsp;
-</div> </ br>
+</div> <br />
 <img width="1270" alt="Screen Shot 2023-04-23 at 12 27 41 PM" src="https://user-images.githubusercontent.com/53094729/233860768-2556f078-259a-40de-aacf-6ab0a67a9fcb.png">
