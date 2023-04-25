@@ -4,6 +4,8 @@ import ScrollToBottom from "react-scroll-to-bottom";
 function Chat({ socket, username, room }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
+  const [typingUser, setTypingUser] = useState("");
+  const [typingTimeout, setTypingTimeout] = useState(null);
 
   const sendMessage = async () => {
     if (currentMessage !== "") {
@@ -22,7 +24,29 @@ function Chat({ socket, username, room }) {
     }
   };
 
-  
+  const handleTyping = (event) => {
+    setCurrentMessage(event.target.value);
+
+    if (!typingTimeout) {
+      socket.emit("user_typing", { room, username });
+      setTypingTimeout(
+        setTimeout(() => {
+          socket.emit("user_stopped_typing", { room, username });
+          setTypingTimeout(null);
+        }, 2000)
+      );
+    } else {
+      clearTimeout(typingTimeout);
+      setTypingTimeout(
+        setTimeout(() => {
+          socket.emit("user_stopped_typing", { room, username });
+          setTypingTimeout(null);
+        }, 2000)
+      );
+    }
+  };
+
+
   useEffect(() => {
     socket.on("receive_message", (data) => {
       setMessageList((list) => [...list, data]);
@@ -30,6 +54,14 @@ function Chat({ socket, username, room }) {
 
     socket.on("user_joined", (data) => {
       setMessageList((list) => [...list, data]);
+    });
+
+    socket.on("user_typing", (data) => {
+      setTypingUser(data.username);
+    });
+
+    socket.on("user_stopped_typing", (data) => {
+      setTypingUser("");
     });
 
     socket.on("user_left", (data) => {
@@ -51,16 +83,18 @@ function Chat({ socket, username, room }) {
         },
       ]);
     });
-  
+
     return () => {
       socket.off("receive_message");
       socket.off("user_joined");
       socket.off("user_left");
       socket.off("room_users");
+      socket.off("user_typing");
+      socket.off("user_stopped_typing");
     };
-    
-  }, [socket]); 
-  
+
+  }, [socket]);
+
 
   return (
     <div className="chat-window">
@@ -72,7 +106,7 @@ function Chat({ socket, username, room }) {
           {messageList.map((messageContent, index) => {
             return (
               <div
-              key={index}
+                key={index}
                 className="message"
                 id={username === messageContent.author ? "you" : "other"}
               >
@@ -94,15 +128,14 @@ function Chat({ socket, username, room }) {
         <input
           type="text"
           value={currentMessage}
-          placeholder="Message..."
-          onChange={(event) => {
-            setCurrentMessage(event.target.value);
-          }}
+          placeholder={typingUser ? "" : "Message..."}
+          onChange={handleTyping}
           onKeyPress={(event) => {
             event.key === "Enter" && sendMessage();
           }}
         />
         <button onClick={sendMessage}>&#9658;</button>
+        {typingUser && <p className="typing-indicator">{typingUser} is typing...</p>}
       </div>
     </div>
   );

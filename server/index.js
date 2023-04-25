@@ -4,6 +4,7 @@ const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
 const usersInRooms = {};
+let typingUsers = {};
 app.use(cors());
 app.options("*", cors());
 
@@ -42,6 +43,14 @@ io.on("connection", (socket) => {
     socket.emit("room_users", usersInRooms[room]);
   });
 
+  socket.on("user_typing", (data) => {
+    socket.to(data.room).emit("user_typing", data);
+  });
+
+  socket.on("user_stopped_typing", (data) => {
+    socket.to(data.room).emit("user_stopped_typing", data);
+  });
+
   socket.on("send_message", (data) => {
     socket.to(data.room).emit("receive_message", data);
   });
@@ -70,6 +79,7 @@ io.on("connection", (socket) => {
     }
   });
 });
+
 
 
 server.listen(3001, () => {
