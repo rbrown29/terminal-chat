@@ -2,4 +2,20 @@
 
 <img width="851" alt="Screen Shot 2023-04-23 at 12 29 48 PM" src="https://user-images.githubusercontent.com/53094729/233860814-ed22f037-2800-4cad-b3c7-9ec8f6e6e62c.png">
 
+## Deployment
+<p><a href="https://sweet-dodol-a631d4.netlify.app/" target="_blank">Frontend</a></p>
+
+## Description
+<p>This is a terminal chat application that allows users to chat with each other in a chat room. The chat room is hosted on a server and users can connect to the server to chat with each other.</p>
+
+## How to use
+<p>Go to the deployment site to try out the chat. Each chat participant must their own window open</p>
+
+## Users can
+- [x] Send messages to each other
+- [x] See who is in the chat room
+- [x] See who is typing
+- [x] See who has joined the chat room
+- [x] See who has left the chat room
+
 <img width="1270" alt="Screen Shot 2023-04-23 at 12 27 41 PM" src="https://user-images.githubusercontent.com/53094729/233860768-2556f078-259a-40de-aacf-6ab0a67a9fcb.png">
