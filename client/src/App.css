@@ -269,7 +269,6 @@ body {
   }
 }
 
-/* Add this at the bottom of your CSS file */
 
 @media screen and (max-width: 767px) {
   .chat-window {
