@@ -294,4 +294,11 @@ body {
     margin-bottom: 10em;
   }
 }
-
+@media (max-width: 768px) {
+  .typing-effect {
+    font-size: 1.5rem;
+    animation: none;
+    border-right: none;
+    width: auto;
+  }
+}
